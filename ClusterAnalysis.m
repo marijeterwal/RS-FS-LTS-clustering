@@ -273,7 +273,7 @@ xlabel('Cluster ID')
 ylabel(varoi, 'Interpreter','none')
 ylim(yax);
 
-%% Figure S1: histogram of frequencies 
+%% Figure S2: histogram of frequencies 
 % run previous section first with varoi = 'freq_LFP';
 
 nbins = 91;
