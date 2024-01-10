@@ -8,9 +8,17 @@ function [freq, power, spectrum, freqs] = spectralpeak(sig, dt, flim)
 % - dt: the time step used for sig (in ms)
 % - flim: frequency boundaries for finding the peak
 
+% demean
+sig = sig-nanmean(sig);
+
 Fs = (1000/dt); % s-1
-[pxx, freqs] = pmtm(sig,3,length(sig),Fs);
-spectrum = pxx;
+% [pxx, freqs] = pmtm(sig,3,length(sig),Fs);
+% spectrum = pxx;
+
+SIG = fft(sig);
+freqs = Fs/length(sig)*(0:(length(sig)/2));
+spectrum = abs(SIG(1:(length(sig)/2+1))/length(sig));
+
 
 if isempty(flim)
     [~,f1] = min(abs(freqs-1));

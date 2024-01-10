@@ -11,12 +11,12 @@ m.j.terwal@bham.ac.uk
 
 % for loading
 datapath = 'U:\4DEEG\User Marije\Simulations\Data\';
-run = 'M14'; 
+run = 'M9'; 
 l1 = '1'; % in case loops were used in this simulation, specify which value to use
 l2 = '1';
 
 % for plotting:
-tlim = [000,2300];
+tlim = [300,2300];
 
 cl = [];
 cl.red = [190,30,45]/255;
@@ -46,23 +46,22 @@ plot(spikes(spikes(:,2) > Ne+Ni1,1),spikes(spikes(:,2) > Ne+Ni1,2),'.','color',c
 plot(spikes(spikes(:,2) > Ne & spikes(:,2) <= Ne+Ni1,1),spikes(spikes(:,2) > Ne & spikes(:,2) <= Ne+Ni1,2),'.','color',cl.blue);
 plot(spikes(spikes(:,2) <= Ne,1),spikes(spikes(:,2) <= Ne,2),'.','color',cl.red);
 ylabel('Neuron number'); xlabel('Time (ms)')
-plot(tt, Ithalamus(1,:),'k')
+plot(tt, Ithalamus,'k')
 ylim([0, Ntot+1]);
 xlim([tlim]);
 
 %% spectra
 
-LFP_sel = LFP(tsel/dt:end);
+ LFP_sel = LFP(tsel/dt:end);
 [~,~,spectrum,freqs] = spectralpeak(LFP_sel, dt,[2,150]);
-[~,~,spectrumT,freqsT] = spectralpeak(Ithalamus(1,tsel/dt:end)/10, dt,[2,150]);
+[~,~,spectrumT,~ = spectralpeak(Ithalamus(tsel/dt:end, dt,[2,150]);
 
-figure;hold on
-semilogy(freqs,spectrum,'k')
-semilogy(freqsT,spectrumT,'r')
-xlim([0.5,100])
-ylim([0,5])
+figure;
+plot(freqs,spectrum,'k')
+xlim([2,100])
+ylim([0,15])
 ylabel('Power (a.u.)')
-xlabel('Frequency (kHz)')
+xlabel('Frequency (Hz)')
 
 figure; 
 cwt(LFP,1000/dt)
@@ -72,7 +71,7 @@ xlabel('Time (ms)')
 %% plot input
 
 figure;
-plot(tt, Ithalamus(1,:),'k')
+plot(tt, Ithalamus,'k')
 ylabel('Thalamic input (Hz)')
 ylim([0,1000])
 xlim(tlim);

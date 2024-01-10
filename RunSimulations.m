@@ -15,15 +15,16 @@ m.j.terwal@bham.ac.uk
 
 clear all
 
-saveID      = 'M1';
+saveID      = 'M14';
 saveData    = 1;
-saveFigures = 1;
-datapath    = 'YourPathHere';
+saveFigures = 0;
+datapath    = 'U:\4DEEG\User Marije\Simulations\Data\';
 
 % get parameter settings
 % - change GetSettings or replace the line below with any of the specific 
 % Motif setting script to run a specific network configuration
-GetSettings
+% GetSettings
+T_XX_Settings_dum
 
 % identify loops
 duml1 = eval(loop1);    nl1 = length(duml1);

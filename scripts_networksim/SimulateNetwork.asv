@@ -54,7 +54,8 @@ Iper    = per'*inputamp*sin(tt*2*pi/Tper);
 Ipulse  = pulse' * zeros(size(tt)); Ipulse(pulse==1, inputtime/dt:(inputtime+pulselength)/dt) = inputamp;
 Iramp   = ramp' * 0.01 * tt;
 Istep   = step'* zeros(size(tt)); Istep(step==1, inputtime/dt:Nt/dt) = inputamp;
-Imultisin = multisin' * (sum(inputamp)+1/length(sinfreq)*getMultisine(inputamp,sinfreq,sinphase,tt/1000));
+Imultisin = multisin'*inputamp+multisin'*inputamp/3*(sin(tt*2*pi*sinfreq(1)/1000-sinphase(1))+sin(tt*2*pi*sinfreq(2)/1000-sinphase(2))...
+    +sin(tt*2*pi*sinfreq(3)/1000-sinphase(3)));
 
 Ithalamus   = (Iper+Iramp+Istep+Ipulse+Imultisin); 
 Pthalamus   = zeros(3,Nt/dt);
@@ -82,8 +83,9 @@ for t = 2:round(Nt/dt)
             Ii2t + Ii2_std*randn(Ni2,1)];
     
     % thalamic input
+    PoissonT = [inputselE*Pthalamus(1,t);inputselI1*Pthalamus(2,t);inputselI2*Pthalamus(3,t)];
     It = It*exp(-dt/tauSyn_AMPA); % mimicking decay of synapses;
-    It(Pthalamus(:,t)==1) = It(Pthalamus(:,t)==1) + 1;   
+    It(PoissonT==1) = It(PoissonT==1) + 1;    
 
     % poisson input    
     Ip = Ip*exp(-dt/tauSyn_AMPA); % mimicking decay of synapses
@@ -104,25 +106,24 @@ for t = 2:round(Nt/dt)
     vstore(:,t) = v;
     vstore(IDfired,t-1) = 30; % make nice spikes
     
-    I = Ip + Syn*Isyn_delay(:,1) + In + [inputselE*It(1);inputselI1*It(2);inputselI2*It(3)];% save new input
+    I = Ip + Syn*Isyn_delay(:,1) + In + It;% save new input
      
     % store Isyn for delay
     Isyn_delay(:,1:end-1) = Isyn_delay(:,2:end);
     Isyn_delay(:,end) = Isyn;
 
-    Isynstore(t) = sum(abs(Isyn),1);
+    Isynstore(t) = mean(I,1);
 
     v   = v + dt*(0.04*v.^2+5*v+140-u+I);%+dum);
     u   = u + dt*a.*(b.*v-u);  
 end
-
-LFP = Isynstore;%mean(vstore,1);
 
 if saveData
     if ~exist([datapath, 'Data/',saveID,'/'])
         mkdir([datapath, 'Data/',saveID,'/'])
     end
     save([datapath, 'Data/',saveID,'/' saveID,'_l1=',num2str(l1),'_l2=',num2str(l2), '_spikeData','.mat'], 'spikes');
-    save([datapath, 'Data/',saveID,'/' saveID,'_l1=',num2str(l1),'_l2=',num2str(l2), '_LFP','.mat'], 'LFP','Isynstore','Ithalamus');
+    LFP = mean(vstore,1);
+    save([datapath, 'Data/',saveID,'/' saveID,'_l1=',num2str(l1),'_l2=',num2str(l2), '_LFP','.mat'], 'LFP','Isynstore');
 end
     
