@@ -1,4 +1,4 @@
-function sigSin = getMultisine(amps,freqs,phases, times)
+function sigSin = getMultisine(amps,freqs,phases, phaseoffset, times)
 
 if ~isempty(phases) && length(freqs) ~= length(phases)
     error('Number of frequencies does not match number of phases')
@@ -16,7 +16,7 @@ end
 
 sig = zeros(length(amps),length(times));
 for a = 1:length(amps)
-    sig(a,:) = amps(a)*sin(times*2*pi*freqs(a)-phases(a));
+    sig(a,:) = amps(a)*sin(times*2*pi*freqs(a)-phases(a)+phaseoffset);
 end
 sigSin = sum(sig,1);
 

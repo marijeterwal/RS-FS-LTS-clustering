@@ -12,7 +12,7 @@ function [freq, power, spectrum, freqs] = spectralpeak(sig, dt, flim)
 sig = sig-nanmean(sig);
 
 Fs = (1000/dt); % s-1
-% [pxx, freqs] = pmtm(sig,3,length(sig),Fs);
+% [pxx, freqs] = pmtm(sig,5,length(sig),Fs);
 % spectrum = pxx;
 
 SIG = fft(sig);
